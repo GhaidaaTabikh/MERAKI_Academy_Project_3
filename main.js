@@ -2,6 +2,9 @@ const express = require("express")
 const app = express()
 const port = 5000
 
+const articlesRouter=express.Router()
+
+
 // getAllArticles ticket
 const articles = [
     {
@@ -33,9 +36,21 @@ const getAllArticles = (req,res,next)=>{
     next()
 }
 
-app.get("/articles",getAllArticles)
+articlesRouter.get("",getAllArticles)
 
 //getArticlesByAuthor ticket
+
+const getArticlesByAuthor = (req,res)=>{
+    res.json(articles.filter((element,index)=>{
+        const t = req.query.author
+        return element.author.toLowerCase()===t.toLowerCase()
+    }))
+}
+
+articlesRouter.get("/search_1",getArticlesByAuthor)
+
+
+app.use("/articles",articlesRouter)
 
 app.listen(port,()=>{
     console.log("hi in project 3");
