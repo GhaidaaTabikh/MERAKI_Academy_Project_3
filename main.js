@@ -1,57 +1,70 @@
-const express = require("express")
-const app = express()
-const port = 5000
+const express = require("express");
+const app = express();
+const port = 5000;
 
-const articlesRouter=express.Router()
-
+const articlesRouter = express.Router();
 
 // getAllArticles ticket
 const articles = [
-    {
+  {
     id: 1,
-    title: 'How I learn coding?',
-    description:
-    'Lorem, Quam, mollitia.',
-    author: 'Jouza',
-    },
-    {
+    title: "How I learn coding?",
+    description: "Lorem, Quam, mollitia.",
+    author: "Jouza",
+  },
+  {
     id: 2,
-    title: 'Coding Best Practices',
-    description:
-    'Lorem, ipsum dolor sit, Quam, mollitia.',
-    author: 'Besslan',
-    },
-    {
+    title: "Coding Best Practices",
+    description: "Lorem, ipsum dolor sit, Quam, mollitia.",
+    author: "Besslan",
+  },
+  {
     id: 3,
-    title: 'Debugging',
-    description:
-    'Lorem, Quam, mollitia.',
-    author: 'Jouza',
-    },
-    ];
+    title: "Debugging",
+    description: "Lorem, Quam, mollitia.",
+    author: "Jouza",
+  },
+];
 
-const getAllArticles = (req,res,next)=>{
-    res.status(200)
-    res.json(articles)
-    next()
-}
+const getAllArticles = (req, res, next) => {
+  res.status(200);
+  res.json(articles);
+  next();
+};
 
-articlesRouter.get("",getAllArticles)
+articlesRouter.get("", getAllArticles);
 
 //getArticlesByAuthor ticket
 
-const getArticlesByAuthor = (req,res)=>{
-    res.json(articles.filter((element,index)=>{
-        const t = req.query.author
-        return element.author.toLowerCase()===t.toLowerCase()
-    }))
-}
+const getArticlesByAuthor = (req, res) => {
+  res.json(
+    articles.filter((element, index) => {
+      const t = req.query.author;
+      return element.author.toLowerCase() === t.toLowerCase();
+    })
+  );
+  res.status(200);
+};
 
-articlesRouter.get("/search_1",getArticlesByAuthor)
+articlesRouter.get("/search_1", getArticlesByAuthor);
 
+// getAnArticleById ticket
 
-app.use("/articles",articlesRouter)
+const getAnArticleById = (req, res) => {
+  res.json(
+    articles.filter((element, index) => {
+      const t = req.query.id;
 
-app.listen(port,()=>{
-    console.log("hi in project 3");
-})
+      return element.id == t;
+    })
+  );
+  res.status(200);
+};
+
+articlesRouter.get("/search_2", getAnArticleById);
+
+app.use("/articles", articlesRouter);
+
+app.listen(port, () => {
+  console.log("hi in project 3");
+});
