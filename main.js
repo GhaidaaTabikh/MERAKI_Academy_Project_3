@@ -92,9 +92,9 @@ const updateAnArticleById = (req, res) => {
     i = index;
     return element.id == req.params.id;
   });
- 
+
   if (req.body.title && req.body.description && req.body.author) {
-    console.log(("gggggggg"));
+    console.log("gggggggg");
     let updateArticles = {
       id: a.id,
       title: req.body.title,
@@ -111,6 +111,23 @@ const updateAnArticleById = (req, res) => {
 };
 
 articlesRouter.put("/:id", updateAnArticleById);
+
+//deleteArticleById
+
+const deleteArticleById = (req, res) => {
+  let i;
+  articles.find((element, index) => {
+    i = index;
+    return element.id == req.params.id;
+  });
+  articles.splice(i, 1);
+  res.json({
+    success: true,
+    massage: `Success Delete article with id =>${req.params.id}`,
+  });
+};
+
+articlesRouter.delete("/:id", deleteArticleById);
 
 app.use("/articles", articlesRouter);
 
