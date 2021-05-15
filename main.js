@@ -129,6 +129,22 @@ const deleteArticleById = (req, res) => {
 
 articlesRouter.delete("/:id", deleteArticleById);
 
+// deleteArticlesByAuthor
+
+const deleteArticlesByAuthor = (req, res) => {
+  articles.forEach((element, index) => {
+    if (element.author.toLowerCase() === req.body.author.toLowerCase()) {
+      articles.splice(index, 1);
+    }
+  });
+  res.json({
+    success: true,
+    massage: `Success Delete articles for the author=>${req.body.author}`,
+  });
+};
+
+articlesRouter.delete("",deleteArticlesByAuthor);
+
 app.use("/articles", articlesRouter);
 
 app.listen(port, () => {
