@@ -5,6 +5,8 @@ app.use(express.json());
 const { uuid } = require("uuidv4");
 console.log(uuid());
 
+const axios = require("axios")
+
 const port = 5000;
 
 const articlesRouter = express.Router();
@@ -146,6 +148,17 @@ const deleteArticlesByAuthor = (req, res) => {
 articlesRouter.delete("",deleteArticlesByAuthor);
 
 app.use("/articles", articlesRouter);
+
+
+//News
+axios.get("https://newsapi.org/v2/everything?q=apple&from=2021-04-15")
+.then((response)=>{
+res.json(response)
+console.log(response);
+})
+.catch((err)=>{
+  throw err
+})
 
 app.listen(port, () => {
   console.log("hi in project 3");
