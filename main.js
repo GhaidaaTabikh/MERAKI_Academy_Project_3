@@ -1,6 +1,17 @@
 const express = require("express");
 const app = express();
-const port = 5000;
+app.use(express.json())
+
+
+
+const { uuid } = require('uuidv4')
+console.log(uuid())
+ 
+ const port = 5000;
+
+
+
+
 
 const articlesRouter = express.Router();
 
@@ -39,8 +50,8 @@ articlesRouter.get("", getAllArticles);
 const getArticlesByAuthor = (req, res) => {
   res.json(
     articles.filter((element, index) => {
-      const t = req.query.author;
-      return element.author.toLowerCase() === t.toLowerCase();
+      const stayAuthor = req.query.author;
+      return element.author.toLowerCase() === stayAuthor.toLowerCase();
     })
   );
   res.status(200);
@@ -62,6 +73,50 @@ const getAnArticleById = (req, res) => {
 };
 
 articlesRouter.get("/search_2", getAnArticleById);
+
+
+//createNewArticle
+
+const createNewArticle  = (req,res)=>{
+ let newArticle = {
+  title:req.body.title,
+  description:req.body.description,
+  author:req.body.author,
+   id:uuid()
+ }
+    articles.push(newArticle)
+    res.json(newArticle)
+
+    res.status=(201)
+}
+
+articlesRouter.post("",createNewArticle)
+
+//updateAnArticleById Ticket
+
+const updateAnArticleById =(req,res)=>{
+  a= articles.filter((element,index)=>{
+    return element.id == req.params.id
+  })
+  console.log(a);
+  console.log(req.body.title,req.body.description,req.body.author);
+  if (req.body.title&req.body.description&req.body.author) {
+    let updateArticles={  id:a.id,
+      title : req.body.title,
+      description:req.body.description,
+      author:req.body.author}
+      console.log(updateArticles);
+  
+    res.json(updateArticles)
+  }
+ else(res.json("forget one of keys"))
+ 
+  
+res.status(200)
+}
+
+articlesRouter.put('/:id',updateAnArticleById)
+
 
 app.use("/articles", articlesRouter);
 
