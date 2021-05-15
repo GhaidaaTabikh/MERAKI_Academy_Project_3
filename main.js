@@ -151,14 +151,34 @@ app.use("/articles", articlesRouter);
 
 
 //News
-axios.get("https://newsapi.org/v2/everything?q=apple&from=2021-04-15")
+
+// api key 246eb856f285429289af63c142eccab3
+axios.get(`https://newsapi.org/v2/everything?q="Rebecca Bellan"&apiKey=246eb856f285429289af63c142eccab3`)
 .then((response)=>{
 res.json(response)
-console.log(response);
+
 })
 .catch((err)=>{
   throw err
 })
+
+
+
+
+//weather
+
+//api key 23cbca9cd4acf2fd77772b3c01d3ff6f
+
+axios.get(`api.openweathermap.org/data/2.5/weather?q=London&appid=23cbca9cd4acf2fd77772b3c01d3ff6f`)
+.then((response)=>{
+res.json(response)
+
+})
+.catch((err)=>{
+  throw err
+})
+
+
 
 app.listen(port, () => {
   console.log("hi in project 3");
