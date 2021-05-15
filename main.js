@@ -1,17 +1,11 @@
 const express = require("express");
 const app = express();
-app.use(express.json())
+app.use(express.json());
 
+const { uuid } = require("uuidv4");
+console.log(uuid());
 
-
-const { uuid } = require('uuidv4')
-console.log(uuid())
- 
- const port = 5000;
-
-
-
-
+const port = 5000;
 
 const articlesRouter = express.Router();
 
@@ -74,49 +68,49 @@ const getAnArticleById = (req, res) => {
 
 articlesRouter.get("/search_2", getAnArticleById);
 
-
 //createNewArticle
 
-const createNewArticle  = (req,res)=>{
- let newArticle = {
-  title:req.body.title,
-  description:req.body.description,
-  author:req.body.author,
-   id:uuid()
- }
-    articles.push(newArticle)
-    res.json(newArticle)
+const createNewArticle = (req, res) => {
+  let newArticle = {
+    title: req.body.title,
+    description: req.body.description,
+    author: req.body.author,
+    id: uuid(),
+  };
+  articles.push(newArticle);
+  res.status = 201;
+  res.json(newArticle);
+};
 
-    res.status=(201)
-}
-
-articlesRouter.post("",createNewArticle)
+articlesRouter.post("", createNewArticle);
 
 //updateAnArticleById Ticket
 
-const updateAnArticleById =(req,res)=>{
-  a= articles.filter((element,index)=>{
-    return element.id == req.params.id
-  })
-  console.log(a);
-  console.log(req.body.title,req.body.description,req.body.author);
-  if (req.body.title&req.body.description&req.body.author) {
-    let updateArticles={  id:a.id,
-      title : req.body.title,
-      description:req.body.description,
-      author:req.body.author}
-      console.log(updateArticles);
-  
-    res.json(updateArticles)
-  }
- else(res.json("forget one of keys"))
+const updateAnArticleById = (req, res) => {
+  let i;
+  a = articles.find((element, index) => {
+    i = index;
+    return element.id == req.params.id;
+  });
  
-  
-res.status(200)
-}
+  if (req.body.title && req.body.description && req.body.author) {
+    console.log(("gggggggg"));
+    let updateArticles = {
+      id: a.id,
+      title: req.body.title,
+      description: req.body.description,
+      author: req.body.author,
+    };
+    console.log(updateArticles);
+    articles.splice(i, 1, updateArticles);
 
-articlesRouter.put('/:id',updateAnArticleById)
+    res.json(updateArticles);
+  } else res.json("forget one of keys");
 
+  res.status(200);
+};
+
+articlesRouter.put("/:id", updateAnArticleById);
 
 app.use("/articles", articlesRouter);
 
