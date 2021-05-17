@@ -182,7 +182,6 @@ app.use("/articles", articlesRouter);
 const db = require("./db");
 const { users, articles } = require("./schema");
 
-
 //Starting step MongoDB
 
 app.get("/users", (req, res) => {
@@ -196,6 +195,31 @@ app.get("/users", (req, res) => {
       res.json(err);
     });
 });
+
+//createNewAuthor [2]
+const createNewAuthor = (req, res) => {
+  const { firstName, lastName, age, country, email, password } = req.body;
+  const author = new users({
+    firstName,
+    lastName,
+    age,
+    country,
+    email,
+    password,
+  });
+
+  author
+    .save()
+    .then((result) => {
+      res.json(result);
+      res.status(201)
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
+app.post("/users", createNewAuthor);
 
 app.listen(port, () => {
   console.log("hi in project 3");
