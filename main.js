@@ -5,33 +5,33 @@ app.use(express.json());
 const { uuid } = require("uuidv4");
 console.log(uuid());
 
-const axios = require("axios")
+const axios = require("axios");
 
 const port = 5000;
 
 const articlesRouter = express.Router();
 
 // getAllArticles ticket
-const articles = [
-  {
-    id: 1,
-    title: "How I learn coding?",
-    description: "Lorem, Quam, mollitia.",
-    author: "Jouza",
-  },
-  {
-    id: 2,
-    title: "Coding Best Practices",
-    description: "Lorem, ipsum dolor sit, Quam, mollitia.",
-    author: "Besslan",
-  },
-  {
-    id: 3,
-    title: "Debugging",
-    description: "Lorem, Quam, mollitia.",
-    author: "Jouza",
-  },
-];
+// const articles = [
+//   {
+//     id: 1,
+//     title: "How I learn coding?",
+//     description: "Lorem, Quam, mollitia.",
+//     author: "Jouza",
+//   },
+//   {
+//     id: 2,
+//     title: "Coding Best Practices",
+//     description: "Lorem, ipsum dolor sit, Quam, mollitia.",
+//     author: "Besslan",
+//   },
+//   {
+//     id: 3,
+//     title: "Debugging",
+//     description: "Lorem, Quam, mollitia.",
+//     author: "Jouza",
+//   },
+// ];
 
 const getAllArticles = (req, res, next) => {
   res.status(200);
@@ -145,40 +145,57 @@ const deleteArticlesByAuthor = (req, res) => {
   });
 };
 
-articlesRouter.delete("",deleteArticlesByAuthor);
+articlesRouter.delete("", deleteArticlesByAuthor);
 
 app.use("/articles", articlesRouter);
 
-
 //News
+// app.get("/news",(req,res)=>{
+// // api key 246eb856f285429289af63c142eccab3
+// axios.get(`https://newsapi.org/v2/everything?q="Rebecca Bellan"&apiKey=246eb856f285429289af63c142eccab3`)
+// .then((response)=>{
+// res.json(response)
 
-// api key 246eb856f285429289af63c142eccab3
-axios.get(`https://newsapi.org/v2/everything?q="Rebecca Bellan"&apiKey=246eb856f285429289af63c142eccab3`)
-.then((response)=>{
-res.json(response)
-
-})
-.catch((err)=>{
-  throw err
-})
-
-
-
+// })
+// .catch((err)=>{
+//   throw err
+// })
+// })
 
 //weather
 
 //api key 23cbca9cd4acf2fd77772b3c01d3ff6f
+// http://api.openweathermap.org/data/2.5/weather?q=London&appid=886705b4c1182eb1c69f28eb8c520e20
 
-axios.get(`api.openweathermap.org/data/2.5/weather?q=London&appid=23cbca9cd4acf2fd77772b3c01d3ff6f`)
-.then((response)=>{
-res.json(response)
+// axios.get(`api.openweathermap.org/data/2.5/weather?q=London&appid=23cbca9cd4acf2fd77772b3c01d3ff6f`)
+// .then((response)=>{
+//   console.log(response);
+// res.json(response)
 
-})
-.catch((err)=>{
-  throw err
-})
+// })
+// .catch((err)=>{
+//   console.log("====================================");
+//   throw err
+// })
+
+//part2
+const db = require("./db");
+const { users, articles } = require("./schema");
 
 
+//Starting step MongoDB
+
+app.get("/users", (req, res) => {
+  articles
+    .find({}, "name author")
+    .populate("users", "firstName")
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
 
 app.listen(port, () => {
   console.log("hi in project 3");
