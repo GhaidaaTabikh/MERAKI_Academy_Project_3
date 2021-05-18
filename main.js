@@ -72,19 +72,19 @@ articlesRouter.get("/search_2", getAnArticleById);
 
 //createNewArticle
 
-const createNewArticle = (req, res) => {
-  let newArticle = {
-    title: req.body.title,
-    description: req.body.description,
-    author: req.body.author,
-    id: uuid(),
-  };
-  articles.push(newArticle);
-  res.status = 201;
-  res.json(newArticle);
-};
+// const createNewArticle = (req, res) => {
+//   let newArticle = {
+//     title: req.body.title,
+//     description: req.body.description,
+//     author: req.body.author,
+//     id: uuid(),
+//   };
+//   articles.push(newArticle);
+//   res.status = 201;
+//   res.json(newArticle);
+// };
 
-articlesRouter.post("", createNewArticle);
+// articlesRouter.post("", createNewArticle);
 
 //updateAnArticleById Ticket
 
@@ -184,17 +184,17 @@ const { users, articles } = require("./schema");
 
 //Starting step MongoDB
 
-app.get("/users", (req, res) => {
-  articles
-    .find({}, "name author")
-    .populate("users", "firstName")
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-});
+// app.get("/users", (req, res) => {
+//   articles
+//     .find({}, "name author")
+//     .populate("users", "firstName")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((err) => {
+//       res.json(err);
+//     });
+// });
 
 //createNewAuthor [2]
 const createNewAuthor = (req, res) => {
@@ -212,7 +212,7 @@ const createNewAuthor = (req, res) => {
     .save()
     .then((result) => {
       res.json(result);
-      res.status(201)
+      res.status(201);
     })
     .catch((err) => {
       res.send(err);
@@ -220,6 +220,33 @@ const createNewAuthor = (req, res) => {
 };
 
 app.post("/users", createNewAuthor);
+
+//createNewArticle [2]
+
+const createNewArticle = (req, res) => {
+  const { title, description, author } = req.body;
+
+  const newArticle = new articles({
+    title,
+    description,
+    author,
+  });
+
+  newArticle
+    .save()
+    .then((result) => {
+      res.json(result);
+      res.status(201);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+ 
+  res.status = 201;
+  
+};
+
+app.post("/articles", createNewArticle);
 
 app.listen(port, () => {
   console.log("hi in project 3");
