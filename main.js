@@ -33,27 +33,27 @@ const articlesRouter = express.Router();
 //   },
 // ];
 
-const getAllArticles = (req, res, next) => {
-  res.status(200);
-  res.json(articles);
-  next();
-};
+// const getAllArticles = (req, res, next) => {
+//   res.status(200);
+//   res.json(articles);
+//   next();
+// };
 
-articlesRouter.get("", getAllArticles);
+// articlesRouter.get("", getAllArticles);
 
 //getArticlesByAuthor ticket
 
-const getArticlesByAuthor = (req, res) => {
-  res.json(
-    articles.filter((element, index) => {
-      const stayAuthor = req.query.author;
-      return element.author.toLowerCase() === stayAuthor.toLowerCase();
-    })
-  );
-  res.status(200);
-};
+// const getArticlesByAuthor = (req, res) => {
+//   res.json(
+//     articles.filter((element, index) => {
+//       const stayAuthor = req.query.author;
+//       return element.author.toLowerCase() === stayAuthor.toLowerCase();
+//     })
+//   );
+//   res.status(200);
+// };
 
-articlesRouter.get("/search_1", getArticlesByAuthor);
+// articlesRouter.get("/search_1", getArticlesByAuthor);
 
 // getAnArticleById ticket
 
@@ -241,12 +241,42 @@ const createNewArticle = (req, res) => {
     .catch((err) => {
       res.send(err);
     });
- 
-  res.status = 201;
-  
 };
 
 app.post("/articles", createNewArticle);
+
+//getAllArticles [2]
+
+const getAllArticles = (req, res) => {
+  articles
+    .find({}, " title  description author")
+    .then((result) => {
+      res.send(result);
+      res.status(200);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
+app.get("/articles", getAllArticles);
+
+//getArticlesByAuthor [2]
+
+const getArticlesByAuthor = (req, res) => {
+  articles
+    .find({ author: req.query.author }, " title  description author")
+
+    .then((result) => {
+      res.send(result);
+      res.status(200);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
+app.get("/articles/search_1", getArticlesByAuthor);
 
 app.listen(port, () => {
   console.log("hi in project 3");

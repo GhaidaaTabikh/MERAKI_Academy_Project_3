@@ -17,6 +17,11 @@ const articlesSchema = new mongoose.Schema({
   author: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
 });
 
+// articlesSchema.pre("getArticlesByAuthor",async function(){
+//   this.author = this.author.toLowerCase();
+//    console.log("the author",this.author);
+// })
+
 const users = mongoose.model("users",usersSchema)
 const articles = mongoose.model("articles",articlesSchema)
 
