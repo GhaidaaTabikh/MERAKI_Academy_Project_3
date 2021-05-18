@@ -88,66 +88,66 @@ const articlesRouter = express.Router();
 
 //updateAnArticleById Ticket
 
-const updateAnArticleById = (req, res) => {
-  let i;
-  a = articles.find((element, index) => {
-    i = index;
-    return element.id == req.params.id;
-  });
+// const updateAnArticleById = (req, res) => {
+//   let i;
+//   a = articles.find((element, index) => {
+//     i = index;
+//     return element.id == req.params.id;
+//   });
 
-  if (req.body.title && req.body.description && req.body.author) {
-    console.log("gggggggg");
-    let updateArticles = {
-      id: a.id,
-      title: req.body.title,
-      description: req.body.description,
-      author: req.body.author,
-    };
-    console.log(updateArticles);
-    articles.splice(i, 1, updateArticles);
+//   if (req.body.title && req.body.description && req.body.author) {
+//     console.log("gggggggg");
+//     let updateArticles = {
+//       id: a.id,
+//       title: req.body.title,
+//       description: req.body.description,
+//       author: req.body.author,
+//     };
+//     console.log(updateArticles);
+//     articles.splice(i, 1, updateArticles);
 
-    res.json(updateArticles);
-  } else res.json("forget one of keys");
+//     res.json(updateArticles);
+//   } else res.json("forget one of keys");
 
-  res.status(200);
-};
+//   res.status(200);
+// };
 
-articlesRouter.put("/:id", updateAnArticleById);
+// articlesRouter.put("/:id", updateAnArticleById);
 
 //deleteArticleById
 
-const deleteArticleById = (req, res) => {
-  let i;
-  articles.find((element, index) => {
-    i = index;
-    return element.id == req.params.id;
-  });
-  articles.splice(i, 1);
-  res.json({
-    success: true,
-    massage: `Success Delete article with id =>${req.params.id}`,
-  });
-};
+// const deleteArticleById = (req, res) => {
+//   let i;
+//   articles.find((element, index) => {
+//     i = index;
+//     return element.id == req.params.id;
+//   });
+//   articles.splice(i, 1);
+//   res.json({
+//     success: true,
+//     massage: `Success Delete article with id =>${req.params.id}`,
+//   });
+// };
 
-articlesRouter.delete("/:id", deleteArticleById);
+// articlesRouter.delete("/:id", deleteArticleById);
 
 // deleteArticlesByAuthor
 
-const deleteArticlesByAuthor = (req, res) => {
-  articles.forEach((element, index) => {
-    if (element.author.toLowerCase() === req.body.author.toLowerCase()) {
-      articles.splice(index, 1);
-    }
-  });
-  res.json({
-    success: true,
-    massage: `Success Delete articles for the author=>${req.body.author}`,
-  });
-};
+// const deleteArticlesByAuthor = (req, res) => {
+//   articles.forEach((element, index) => {
+//     if (element.author.toLowerCase() === req.body.author.toLowerCase()) {
+//       articles.splice(index, 1);
+//     }
+//   });
+//   res.json({
+//     success: true,
+//     massage: `Success Delete articles for the author=>${req.body.author}`,
+//   });
+// };
 
-articlesRouter.delete("", deleteArticlesByAuthor);
+// articlesRouter.delete("", deleteArticlesByAuthor);
 
-app.use("/articles", articlesRouter);
+// app.use("/articles", articlesRouter);
 
 //News
 // app.get("/news",(req,res)=>{
@@ -180,7 +180,7 @@ app.use("/articles", articlesRouter);
 
 //part2
 const db = require("./db");
-const { users, articles } = require("./schema");
+const { users, articles, comments } = require("./schema");
 
 //createNewAuthor [2]
 const createNewAuthor = (req, res) => {
@@ -279,7 +279,6 @@ const getAnArticleById = async (req, res) => {
     .populate("author", "lastName")
     .exec()
     .then((result) => {
-
       let b = result.filter((element, index) => {
         console.log("filter");
         console.log(element.author.lastName);
@@ -291,6 +290,65 @@ const getAnArticleById = async (req, res) => {
 };
 
 app.get("/articles/search_2", getAnArticleById);
+
+//5. updateAnArticleById [2]
+
+const updateArticlesByAuthor = (req, res) => {
+  articles.update(
+    { _id: req.query.articlesId },
+    { description: req.body.description },
+    () => {
+      res.send("result");
+      console.log("result");
+    }
+  );
+
+  res.status(200);
+};
+
+app.put("/articles", updateArticlesByAuthor);
+
+//6. deleteAnArticleById [2]
+
+const deleteArticleById = async (req, res) => {
+  await articles.deleteOne({ _id: req.query.articlesId });
+  res.json("delete");
+};
+
+app.delete("/articles", deleteArticleById);
+
+//7. deleteArticlesByAuthor [2]
+
+const deleteArticlesByAuthor = async (req, res) => {
+  await articles.deleteOne({ author: req.params.authorId });
+  res.json("deleteAuthor");
+};
+
+app.delete("/articles/:authorId", deleteArticlesByAuthor);
+
+// 2. login (Level 1)
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+  users
+    .findOne({ email: req.body.email, password: req.body.password })
+    .then((result) => {
+      if (result === null) {
+        res.json(" Invalid login credentials");
+        res.status(401);
+      } else {
+        res.status(200);
+        res.json("Valid login credentials");
+      }
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
+app.post("/login", login);
+
+//
 
 app.listen(port, () => {
   console.log("hi in project 3");
