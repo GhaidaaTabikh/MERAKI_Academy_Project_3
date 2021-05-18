@@ -15,15 +15,26 @@ const articlesSchema = new mongoose.Schema({
   title: { type: String , unique : true},
   description: { type: String },
   author: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
+
 });
 
-// articlesSchema.pre("getArticlesByAuthor",async function(){
-//   this.author = this.author.toLowerCase();
-//    console.log("the author",this.author);
-// })
+
+
+articlesSchema.pre("getAnArticleById",async function(){
+  articles
+.find({})
+.populate("author", "firstName")
+.exec()
+.then((result) => {
+  // console.log(result);
+});
+
+})
 
 const users = mongoose.model("users",usersSchema)
 const articles = mongoose.model("articles",articlesSchema)
+
+
 
 
 module.exports.users = users;

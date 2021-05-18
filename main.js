@@ -57,18 +57,18 @@ const articlesRouter = express.Router();
 
 // getAnArticleById ticket
 
-const getAnArticleById = (req, res) => {
-  res.json(
-    articles.filter((element, index) => {
-      const t = req.query.id;
+// const getAnArticleById = (req, res) => {
+//   res.json(
+//     articles.filter((element, index) => {
+//       const t = req.query.id;
 
-      return element.id == t;
-    })
-  );
-  res.status(200);
-};
+//       return element.id == t;
+//     })
+//   );
+//   res.status(200);
+// };
 
-articlesRouter.get("/search_2", getAnArticleById);
+// articlesRouter.get("/search_2", getAnArticleById);
 
 //createNewArticle
 
@@ -182,20 +182,6 @@ app.use("/articles", articlesRouter);
 const db = require("./db");
 const { users, articles } = require("./schema");
 
-//Starting step MongoDB
-
-// app.get("/users", (req, res) => {
-//   articles
-//     .find({}, "name author")
-//     .populate("users", "firstName")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((err) => {
-//       res.json(err);
-//     });
-// });
-
 //createNewAuthor [2]
 const createNewAuthor = (req, res) => {
   const { firstName, lastName, age, country, email, password } = req.body;
@@ -247,7 +233,14 @@ app.post("/articles", createNewArticle);
 
 //getAllArticles [2]
 
-const getAllArticles = (req, res) => {
+const getAllArticles = async (req, res) => {
+  await articles
+    .find({}, "name author")
+    .populate("users", "firstName")
+    .exec()
+    .then((result) => {
+      console.log(result);
+    });
   articles
     .find({}, " title  description author")
     .then((result) => {
@@ -277,6 +270,27 @@ const getArticlesByAuthor = (req, res) => {
 };
 
 app.get("/articles/search_1", getArticlesByAuthor);
+
+//getAnArticleById [2]  Use Populate (so the author value will be his firstName not his ID)
+
+
+const getAnArticleById =  (req, res) => {
+ 
+  articles
+    .find({}, " title  description author")
+
+    .then((result) => {
+      res.json(result);
+      res.status(200);
+      console.log(result);
+    })
+    .catch((err) => {
+      res.send(err);
+      console.log("not find");
+    });
+};
+
+app.get("/articles/search_2", getAnArticleById);
 
 app.listen(port, () => {
   console.log("hi in project 3");
