@@ -368,6 +368,28 @@ const createNewComment = (req, res) => {
 
 app.post("/articles/:id/comments", createNewComment);
 
+//add comment to article
+
+const addNewComment =  (req, res) => {
+  const { comment, commenter } = req.body;
+  const newComment = new comments({
+    comment,
+    commenter,
+  });
+  newComment
+    .save()
+    .then((result) => {
+     articles.updateOne({ _id: req.params.id }, { $push:{comments: result._id} }).exec()
+      res.json(result);
+      res.status(201);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
+app.post("/articles/:id/addComments", addNewComment);
+
 app.listen(port, () => {
   console.log("hi in project 3");
 });
