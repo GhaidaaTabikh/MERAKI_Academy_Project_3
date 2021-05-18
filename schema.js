@@ -20,16 +20,16 @@ const articlesSchema = new mongoose.Schema({
 
 
 
-articlesSchema.pre("getAnArticleById",async function(){
-  articles
-.find({})
-.populate("author", "firstName")
-.exec()
-.then((result) => {
-  // console.log(result);
-});
+// articlesSchema.pre("getAnArticleById",async function(){
+//   articles
+// .find({})
+// .populate("author", "firstName")
+// .exec()
+// .then((result) => {
+//   // console.log(result);
+// });
 
-})
+// })
 
 const users = mongoose.model("users",usersSchema)
 const articles = mongoose.model("articles",articlesSchema)

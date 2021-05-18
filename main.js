@@ -273,20 +273,20 @@ app.get("/articles/search_1", getArticlesByAuthor);
 
 //getAnArticleById [2]  Use Populate (so the author value will be his firstName not his ID)
 
-
-const getAnArticleById =  (req, res) => {
- 
-  articles
-    .find({}, " title  description author")
-
+const getAnArticleById = async (req, res) => {
+  await articles
+    .find({}, "title description author")
+    .populate("author", "lastName")
+    .exec()
     .then((result) => {
-      res.json(result);
-      res.status(200);
-      console.log(result);
-    })
-    .catch((err) => {
-      res.send(err);
-      console.log("not find");
+
+      let b = result.filter((element, index) => {
+        console.log("filter");
+        console.log(element.author.lastName);
+        return element.author.lastName == req.query.lastName;
+      });
+      res.json(b);
+      console.log("update author");
     });
 };
 
