@@ -329,7 +329,6 @@ app.delete("/articles/:authorId", deleteArticlesByAuthor);
 // 2. login (Level 1)
 
 const login = (req, res) => {
-  const { email, password } = req.body;
   users
     .findOne({ email: req.body.email, password: req.body.password })
     .then((result) => {
@@ -348,7 +347,26 @@ const login = (req, res) => {
 
 app.post("/login", login);
 
-//
+//3. createNewComment
+
+const createNewComment = (req, res) => {
+  const { comment, commenter } = req.body;
+  const newComment = new comments({
+    comment,
+    commenter,
+  });
+  newComment
+    .save()
+    .then((result) => {
+      res.json(result);
+      res.status(201);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
+app.post("/articles/:id/comments", createNewComment);
 
 app.listen(port, () => {
   console.log("hi in project 3");

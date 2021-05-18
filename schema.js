@@ -15,7 +15,7 @@ const articlesSchema = new mongoose.Schema({
   title: { type: String , unique : true},
   description: { type: String },
   author: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
-  comments: [ mongoose.Schema.Types.ObjectId] 
+  comments: [ {type: mongoose.Schema.Types.ObjectId , ref :"comments"} ] 
 
 });
 
@@ -23,7 +23,7 @@ const articlesSchema = new mongoose.Schema({
 
 const commentsSchema = new mongoose.Schema({
   comment: { type: String },
-commenter: { type: mongoose.Schema.Types.ObjectId }
+commenter: { type: mongoose.Schema.Types.ObjectId ,ref :"users"}
 })
 
 
