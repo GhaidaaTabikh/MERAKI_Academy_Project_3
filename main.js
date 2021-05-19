@@ -182,6 +182,13 @@ const articlesRouter = express.Router();
 const db = require("./db");
 const { users, articles, comments } = require("./schema");
 
+//Authentication  
+const bcrypt = require("bcrypt")
+require("dotenv").config()
+const jwt = require("jsonwebtoken")
+
+
+
 //createNewAuthor [2]
 const createNewAuthor = (req, res) => {
   const { firstName, lastName, age, country, email, password } = req.body;
