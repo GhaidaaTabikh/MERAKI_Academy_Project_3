@@ -1,14 +1,17 @@
 //Starting step MongoDB
 
 const mongoose = require("mongoose");
+require("dotenv").config()
+
 
 const options = {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
 };
+const mongoDp= process.env.DB_URI
 
-mongoose.connect("mongodb://localhost:27017/project_3_v01", options).then(
+mongoose.connect(mongoDp, options).then(
   () => {
     console.log("project_3_v01 Ready To Use");
   },

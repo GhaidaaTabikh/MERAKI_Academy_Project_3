@@ -182,12 +182,10 @@ const articlesRouter = express.Router();
 const db = require("./db");
 const { users, articles, comments } = require("./schema");
 
-//Authentication  
-const bcrypt = require("bcrypt")
-require("dotenv").config()
-const jwt = require("jsonwebtoken")
-
-
+//Authentication
+const bcrypt = require("bcrypt");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 //createNewAuthor [2]
 const createNewAuthor = (req, res) => {
@@ -335,16 +333,63 @@ app.delete("/articles/:authorId", deleteArticlesByAuthor);
 
 // 2. login (Level 1)
 
+// const login = (req, res) => {
+//   users
+//     .findOne({ email: req.body.email, password: req.body.password })
+//     .then((result) => {
+//       if (result === null) {
+//         res.json(" Invalid login credentials");
+//         res.status(401);
+//       } else {
+//         res.status(200);
+//         res.json("Valid login credentials");
+
+//       }
+//     })
+//     .catch((err) => {
+//       res.send(err);
+//     });
+// };
+// 2. login (Level 2)
+//aaaaaaaaaaa
+const secret = process.env.SECRET;
 const login = (req, res) => {
+  const reqEmail = req.body.email;
   users
-    .findOne({ email: req.body.email, password: req.body.password })
-    .then((result) => {
+    .findOne({ email: reqEmail.toLowerCase() })
+    .then(async (result) => {
       if (result === null) {
-        res.json(" Invalid login credentials");
-        res.status(401);
+        res.status(404);
+        res.json({ message: "The email doesn't exist", status: 404 });
       } else {
-        res.status(200);
-        res.json("Valid login credentials");
+        await bcrypt.compare(
+          req.body.password,
+          result.password,
+          (err, result) => {
+            if (err) {
+              res.send(err);
+            }
+            if (result === false) {
+              res.status(403);
+              res.json({
+                message: "The password you’ve entered is incorrect",
+                status: 403,
+              });
+            }
+            if (result === true) {
+              res.status(200);
+              const payload = {
+                userId: "a string represents the user id",
+                country: "a string represents the user country",
+              };
+              const options = {
+                expiresIn: "60m",
+              };
+              const token = jwt.sign(payload, secret, options);
+              res.json({ token: token });
+            }
+          }
+        );
       }
     })
     .catch((err) => {
@@ -377,7 +422,7 @@ app.post("/articles/:id/comments", createNewComment);
 
 //add comment to article
 
-const addNewComment =  (req, res) => {
+const addNewComment = (req, res) => {
   const { comment, commenter } = req.body;
   const newComment = new comments({
     comment,
@@ -386,7 +431,9 @@ const addNewComment =  (req, res) => {
   newComment
     .save()
     .then((result) => {
-     articles.updateOne({ _id: req.params.id }, { $push:{comments: result._id} }).exec()
+      articles
+        .updateOne({ _id: req.params.id }, { $push: { comments: result._id } })
+        .exec();
       res.json(result);
       res.status(201);
     })
