@@ -180,7 +180,7 @@ const articlesRouter = express.Router();
 
 //part2
 const db = require("./db");
-const { users, articles, comments } = require("./schema");
+const { users, articles, comments, roles } = require("./schema");
 
 //Authentication
 const bcrypt = require("bcrypt");
@@ -189,7 +189,8 @@ const jwt = require("jsonwebtoken");
 
 //createNewAuthor [2]
 const createNewAuthor = (req, res) => {
-  const { firstName, lastName, age, country, email, password } = req.body;
+  const { firstName, lastName, age, country, email, password, roles } =
+    req.body;
   const author = new users({
     firstName,
     lastName,
@@ -197,6 +198,7 @@ const createNewAuthor = (req, res) => {
     country,
     email,
     password,
+    roles,
   });
 
   author
@@ -352,12 +354,17 @@ app.delete("/articles/:authorId", deleteArticlesByAuthor);
 // };
 // 2. login (Level 2)
 //aaaaaaaaaaa
+let result1;
 const secret = process.env.SECRET;
+
 const login = (req, res) => {
   const reqEmail = req.body.email;
+
   users
     .findOne({ email: reqEmail.toLowerCase() })
+
     .then(async (result) => {
+      result1 = result;
       if (result === null) {
         res.status(404);
         res.json({ message: "The email doesn't exist", status: 404 });
@@ -379,13 +386,17 @@ const login = (req, res) => {
             if (result === true) {
               res.status(200);
               const payload = {
-                userId: "a string represents the user id",
-                country: "a string represents the user country",
+                firstName: result1.firstName,
+                userId: result1._id,
+                country: result1.country,
+                roles: result1.roles,
               };
+              console.log(payload);
               const options = {
                 expiresIn: "60m",
               };
               const token = jwt.sign(payload, secret, options);
+              console.log(payload);
               res.json({ token: token });
             }
           }
@@ -399,7 +410,48 @@ const login = (req, res) => {
 
 app.post("/login", login);
 
+//5. createNewComment [Level 3]
+
+const authorization = (string) => {
+  let perm;
+  users
+    .find({}, "name roles")
+    .populate("roles permissions")
+
+    .then((result) => {
+      perm = result;
+    });
+console.log(perm);
+  // return (req, res, next) => {
+  //   console.log("===========", req.token);
+
+  //   console.log(req.token.roles.permissions);
+  //   perm.find((element) => {
+  //     if (element === string) {
+  //       next();
+  //     }
+  //   });
+  //   res.json({ message: "forbidden ", status: 403 });
+  // };
+};
+
 //3. createNewComment
+
+const authentication = (req, res, next) => {
+  if (!req.headers.authorization) {
+    res.json("no token");
+  }
+  const token = req.headers.authorization.split(" ")[1];
+  jwt.verify(token, secret, (err, result) => {
+    if (err) {
+      return res.json(err);
+    }
+    if (result) {
+      req.token = result;
+      next();
+    }
+  });
+};
 
 const createNewComment = (req, res) => {
   const { comment, commenter } = req.body;
@@ -418,7 +470,12 @@ const createNewComment = (req, res) => {
     });
 };
 
-app.post("/articles/:id/comments", createNewComment);
+app.post(
+  "/articles/:id/comments",
+  authentication,
+  authorization("CREATE_COMMENT"),
+  createNewComment
+);
 
 //add comment to article
 
@@ -432,7 +489,7 @@ const addNewComment = (req, res) => {
     .save()
     .then((result) => {
       articles
-        .updateOne({ _id: req.params.id }, { $push: { comments: result._id } })
+        .update({ _id: req.params.id }, { $push: { comments: result._id } })
         .exec();
       res.json(result);
       res.status(201);
@@ -443,6 +500,24 @@ const addNewComment = (req, res) => {
 };
 
 app.post("/articles/:id/addComments", addNewComment);
+
+const addRoles = (req, res) => {
+  const { role, permissions } = req.body;
+  const newRole = new roles({
+    role,
+    permissions,
+  });
+  newRole
+    .save()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
+app.post("/roles", addRoles);
 
 app.listen(port, () => {
   console.log("hi in project 3");

@@ -10,6 +10,7 @@ const usersSchema = new mongoose.Schema({
   country: { type: String },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
+  roles :{type: mongoose.Schema.Types.ObjectId,ref:"roles"}
 });
 
 const articlesSchema = new mongoose.Schema({
@@ -32,10 +33,19 @@ usersSchema.pre("save", async function () {
   this.password = hashedPassword;
 });
 
+//Create roles schema
+
+rolesSchema = new mongoose.Schema({
+  role :{type: String },
+  permissions :[{type:String}]
+})
+
 const users = mongoose.model("users", usersSchema);
 const articles = mongoose.model("articles", articlesSchema);
 const comments = mongoose.model("comments", commentsSchema);
+const roles = mongoose.model("roles",rolesSchema)
 
 module.exports.users = users;
 module.exports.articles = articles;
 module.exports.comments = comments;
+module.exports.roles = roles;
