@@ -1,0 +1,19 @@
+.Register {
+  border: 3px solid blue;
+  padding-right: 60%;
+  padding-top: 0px;
+}
+
+.paragraph {
+  margin-top: 0px;
+}
+.register {
+  display: grid;
+  gap: 5px;
+}
+
+.button {
+  background-color: rgb(49, 49, 245);
+  padding: 5px;
+  color: white;
+}

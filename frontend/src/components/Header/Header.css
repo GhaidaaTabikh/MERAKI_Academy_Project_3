@@ -1,0 +1,6 @@
+
+.Header {
+    border: 3px solid red;
+  display: flex;
+  column-gap: 10px;
+}

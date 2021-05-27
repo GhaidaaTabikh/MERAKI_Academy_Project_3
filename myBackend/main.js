@@ -413,27 +413,31 @@ app.post("/login", login);
 //5. createNewComment [Level 3]
 
 const authorization = (string) => {
-  let perm;
-  users
-    .find({}, "name roles")
-    .populate("roles permissions")
+  
 
-    .then((result) => {
-      perm = result;
-    });
-console.log(perm);
-  // return (req, res, next) => {
-  //   console.log("===========", req.token);
+  return (req, res, next) => {
 
-  //   console.log(req.token.roles.permissions);
-  //   perm.find((element) => {
-  //     if (element === string) {
-  //       next();
-  //     }
-  //   });
-  //   res.json({ message: "forbidden ", status: 403 });
-  // };
-};
+    if (req.token) {
+      roles
+      .findOne({ _id : req.token.roles})
+
+      // users
+      // .find({})
+      // .populate("roles", "permissions" )
+      // .then(result){
+
+      // }
+      
+  
+      .then((result) => {
+  
+        result.permissions.include(string) ? next()  :  res.json({ message: "forbidden ", status: 403 });
+  
+      });
+    }
+    else{return "user not defined "}
+  
+};}
 
 //3. createNewComment
 

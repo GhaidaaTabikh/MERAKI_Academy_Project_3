@@ -1,0 +1,17 @@
+.login {
+  border: 3px solid violet;
+  padding-right: 60%;
+  padding-top: 0px;
+  display: grid;
+  gap: 5px;
+}
+
+.loginButton{
+    background-color: blue;
+    color: white;
+    padding: 2px;
+}
+
+.paragraph {
+    margin-top: 0px;
+  }

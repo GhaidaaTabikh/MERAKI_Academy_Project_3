@@ -1,0 +1,26 @@
+.Dashboardcom{
+    
+    padding-top: 0px;
+}
+
+
+.Navigator {
+  border: 3px solid red;
+  display: flex;
+  column-gap: 10px;
+  margin-bottom: 7px;
+}
+
+.body {
+  border: 3px solid blue;
+ 
+  margin-top: 0px;
+}
+.buttonArticles{
+    padding: 3px;
+    background-color: blue;
+    color: white;
+}
+.dash{
+  margin-top : 0px;
+}
