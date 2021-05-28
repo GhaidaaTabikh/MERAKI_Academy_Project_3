@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch ,Redirect } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header/Header";
 import Register from "./components/Register/Register";
@@ -18,6 +18,11 @@ export default function App() {
       
 
       <Route path="/register" component={Register} />
+
+
+      {token ? <Redirect to="/dashboard" /> :null }
+
+
     </div>
   );
 }

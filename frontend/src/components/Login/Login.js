@@ -20,10 +20,7 @@ export default function Login({ setToken }) {
         console.log(res);
         setToken(res.data.token);
         setLoginMessage("login successful");
-        window.location.replace("http://localhost:3000/dashboard");
-        // <Link to ="dashboard"></Link>
-        // // <Redirect to="http://localhost:3000/dashboard" />
-
+       
        
       })
       .catch((err) => {
