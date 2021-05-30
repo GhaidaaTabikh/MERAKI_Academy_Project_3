@@ -1,6 +1,8 @@
 //Starting step MongoDB
 const bcrypt = require("bcrypt");
 
+
+
 const mongoose = require("mongoose");
 
 const usersSchema = new mongoose.Schema({
@@ -12,6 +14,12 @@ const usersSchema = new mongoose.Schema({
   password: { type: String, required: true },
   roles :{type: mongoose.Schema.Types.ObjectId,ref:"roles"}
 });
+
+
+
+
+
+
 
 const articlesSchema = new mongoose.Schema({
   title: { type: String, unique: true },

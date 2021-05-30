@@ -55,8 +55,9 @@ const createNewArticle = (req, res) => {
 	article
 		.save()
 		.then((result) => {
-			console.log("++++++++++++++");
+			
 			res.status(201).json(result);
+			
 		})
 		.catch((err) => {
 			console.log("===========");

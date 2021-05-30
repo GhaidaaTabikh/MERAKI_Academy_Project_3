@@ -240,14 +240,7 @@ app.post("/articles", createNewArticle);
 
 //getAllArticles [2]
 
-const getAllArticles = async (req, res) => {
-  await articles
-    .find({}, "name author")
-    .populate("users", "firstName")
-    .exec()
-    .then((result) => {
-      console.log(result);
-    });
+const getAllArticles = (req, res) => {
   articles
     .find({}, " title  description author")
     .then((result) => {
@@ -280,19 +273,15 @@ app.get("/articles/search_1", getArticlesByAuthor);
 
 //getAnArticleById [2]  Use Populate (so the author value will be his firstName not his ID)
 
-const getAnArticleById = async (req, res) => {
-  await articles
-    .find({}, "title description author")
-    .populate("author", "lastName")
+const getAnArticleById = (req, res) => {
+  _id = req.query._id;
+
+  articles
+    .find({ _id })
+    .populate("author", "firstName")
     .exec()
     .then((result) => {
-      let b = result.filter((element, index) => {
-        console.log("filter");
-        console.log(element.author.lastName);
-        return element.author.lastName == req.query.lastName;
-      });
-      res.json(b);
-      console.log("update author");
+      res.json(result);
     });
 };
 
@@ -302,7 +291,7 @@ app.get("/articles/search_2", getAnArticleById);
 
 const updateArticlesByAuthor = (req, res) => {
   articles.update(
-    { _id: req.query.articlesId },
+    { _id: req.query._id },
     { description: req.body.description },
     () => {
       res.send("result");
@@ -327,7 +316,7 @@ app.delete("/articles", deleteArticleById);
 //7. deleteArticlesByAuthor [2]
 
 const deleteArticlesByAuthor = async (req, res) => {
-  await articles.deleteOne({ author: req.params.authorId });
+  await articles.deleteMany({ author: req.params.authorId });
   res.json("deleteAuthor");
 };
 
@@ -336,24 +325,21 @@ app.delete("/articles/:authorId", deleteArticlesByAuthor);
 // 2. login (Level 1)
 
 // const login = (req, res) => {
-//   users
-//     .findOne({ email: req.body.email, password: req.body.password })
-//     .then((result) => {
-//       if (result === null) {
-//         res.json(" Invalid login credentials");
-//         res.status(401);
-//       } else {
-//         res.status(200);
-//         res.json("Valid login credentials");
+//  const {email,password}=req.body
 
-//       }
-//     })
-//     .catch((err) => {
-//       res.send(err);
-//     });
-// };
+// users.findOne({email},"password")
+// .then((result)=>{
+// if  (result.password=== password ){res.status(200).json(" Valid login credentials")}
+// else{res.status(200).json("in  Valid login credentials")}
+// })
+// .catch((err) => {
+//         res.send(err);
+//        });
+//   };
+
 // 2. login (Level 2)
 //aaaaaaaaaaa
+//ggg   12345678
 let result1;
 const secret = process.env.SECRET;
 
@@ -413,31 +399,28 @@ app.post("/login", login);
 //5. createNewComment [Level 3]
 
 const authorization = (string) => {
-  
-
   return (req, res, next) => {
-
     if (req.token) {
       roles
-      .findOne({ _id : req.token.roles})
+        .findOne({ _id: req.token.roles })
 
-      // users
-      // .find({})
-      // .populate("roles", "permissions" )
-      // .then(result){
+        // users
+        // .find({})
+        // .populate("roles", "permissions" )
+        // .then(result){
 
-      // }
-      
-  
-      .then((result) => {
-  
-        result.permissions.include(string) ? next()  :  res.json({ message: "forbidden ", status: 403 });
-  
-      });
+        // }
+
+        .then((result) => {
+          result.permissions.include(string)
+            ? next()
+            : res.json({ message: "forbidden ", status: 403 });
+        });
+    } else {
+      return "user not defined ";
     }
-    else{return "user not defined "}
-  
-};}
+  };
+};
 
 //3. createNewComment
 
@@ -452,6 +435,7 @@ const authentication = (req, res, next) => {
     }
     if (result) {
       req.token = result;
+
       next();
     }
   });
