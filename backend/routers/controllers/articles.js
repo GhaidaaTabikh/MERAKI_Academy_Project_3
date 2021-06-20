@@ -60,7 +60,7 @@ const createNewArticle = (req, res) => {
 			
 		})
 		.catch((err) => {
-			console.log("===========");
+	
 			res.send(err);
 			
 		});
