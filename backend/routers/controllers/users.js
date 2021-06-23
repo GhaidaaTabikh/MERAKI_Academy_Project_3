@@ -1,4 +1,4 @@
-const usersModel = require("./../../db/models/users");
+// const usersModel = require("./../../db/models/users");
 const db = require("./../../db/db");
 
 // const createNewAuthor = (req, res) => {

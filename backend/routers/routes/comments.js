@@ -11,8 +11,8 @@ const commentsRouter = express.Router();
 
 commentsRouter.post(
 	'/articles/:id/comments',
-	authentication,
-	authorization('CREATE_COMMENTS'),
+	// authentication,
+	// authorization('CREATE_COMMENTS'),
 	createNewComment,
 );
 

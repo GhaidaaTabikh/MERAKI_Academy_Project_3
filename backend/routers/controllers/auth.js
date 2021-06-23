@@ -22,13 +22,13 @@ const login = async (req, res) => {
   db.query(command, arr, async (err, result) => {
     if (err) throw err;
 	console.log("result",result);
-	console.log(result==[]);
+
     if (result.length===0) {
       res.status(404);
       res.json("The email doesn't exist");
     } else {
-		console.log("password",result.password);
-      const valid = await bcrypt.compare(password, result.password);
+		console.log("password",result[0].password);
+      const valid = await bcrypt.compare(password,result[0].password);
       if (valid) {
         const payload = {
           userId: result.id,
